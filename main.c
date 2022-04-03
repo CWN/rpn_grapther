@@ -9,6 +9,7 @@
 int main() {
     //char test[] = "Test! Test(dfs )aaa+1+1000a+sin(x)*cos(y)";
     //char test[] = "sin(cos(2*x))*tan(x)- 1";
+//    char test[] = "sin(cos(2*x))";
     char test[] = "sin(cos(2*x))";
     //char test[] = "sin ( cos ( x ) / 3 * 2)";
 

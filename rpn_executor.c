@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <complex.h>
 #include "rpn_executor.h"
 #include "simple_list.h"
 #include "token.h"
@@ -107,8 +108,96 @@ struct list rpn(struct list *parsed_list) {
 }
 
 double executor(struct list *rpn, double x) {
-    //double result = sin(cos(2 * x));
-    double result = sin(x);
+    double result, temp;
+
+    struct stack stack;
+    stack_init(&stack);
+
+    struct token current_tt, a, b;
+    struct token val = {TT_DIGIT, 0};
+    struct token x_tt = {TT_DIGIT, x};
+
+    current_tt = list_get_first(rpn);
+    while (current_tt.token_type != TT_END) {
+        switch (current_tt.token_type) {
+            case TT_DIGIT:
+                stack_push(&stack, current_tt);
+                break;
+            case TT_X:
+                stack_push(&stack, x_tt);
+                break;
+            case TT_SIN:
+                a = stack_pop(&stack);
+                val.value = sin(a.value);
+                stack_push(&stack, val);
+                break;
+            case TT_COS:
+                a = stack_pop(&stack);
+                val.value = cos(a.value);
+                stack_push(&stack, val);
+                break;
+            case TT_TAN:
+                a = stack_pop(&stack);
+                val.value = tan(a.value);
+                stack_push(&stack, val);
+                break;
+            case TT_CTG:
+                a = stack_pop(&stack);
+                temp = sin(x);
+                if (temp != 0.0) {
+                    val.value = cos(a.value) / temp;
+                } else {
+                    val.value = 100000;
+                }
+
+                stack_push(&stack, val);
+                break;
+            case TT_SQRT:
+                a = stack_pop(&stack);
+                val.value = sqrt(a.value);
+                stack_push(&stack, val);
+                break;
+            case TT_LN:
+                a = stack_pop(&stack);
+                val.value = log(a.value);
+                stack_push(&stack, val);
+                break;
+                // operators
+            case TT_PLUS:
+                a = stack_pop(&stack);
+                b = stack_pop(&stack);
+                val.value = a.value + b.value;
+                stack_push(&stack, val);
+                break;
+            case TT_MINUS:
+                a = stack_pop(&stack);
+                b = stack_pop(&stack);
+                val.value = a.value - b.value;
+                stack_push(&stack, val);
+                break;
+            case TT_MUL:
+                a = stack_pop(&stack);
+                b = stack_pop(&stack);
+                val.value = a.value * b.value;
+                stack_push(&stack, val);
+                break;
+            case TT_DIV:
+                a = stack_pop(&stack);
+                b = stack_pop(&stack);
+                if (b.value != 0.0) {
+                    val.value = a.value / b.value;
+                } else {
+                    val.value = 100000;
+                }
+
+                stack_push(&stack, val);
+                break;
+        }
+        current_tt = list_get_next(rpn);
+    }
+
+    current_tt = stack_top(&stack);
+    result = current_tt.value;
 
     return result;
 }
