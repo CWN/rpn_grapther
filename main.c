@@ -8,7 +8,10 @@
 
 int main() {
     //char test[] = "Test! Test(dfs )aaa+1+1000a+sin(x)*cos(y)";
-    char test[] = "sin(cos(2*x))*tan( x)- 1";
+    //char test[] = "sin(cos(2*x))*tan(x)- 1";
+    char test[] = "sin(cos(2*x))";
+    //char test[] = "sin ( cos ( x ) / 3 * 2)";
+
     printf("%s\n", test);
 
     double x, y;
@@ -24,9 +27,13 @@ int main() {
     parsed_list = parse_source(test);
     check_parse_errors(&parsed_list);
 
+    printf("parsed list:\n");
     list_debug_print(&parsed_list);
 
     rpn_list = rpn(&parsed_list);
+
+    printf("RPN List:\n");
+    list_debug_print(&rpn_list);
 
     x = 0;
     display_clear(&display);

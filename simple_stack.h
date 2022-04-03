@@ -14,6 +14,10 @@ void stack_init(struct stack *stack);
 
 void stack_push(struct stack *stack, struct token token);
 
+struct token stack_top(struct stack *stack);
+
 struct token stack_pop(struct stack *stack);
+
+void stack_dump(struct stack *stack);
 
 #endif //SIMPLE_STACK_H
